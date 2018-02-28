@@ -15,6 +15,32 @@ schemes:
 - "https"
 - "http"
 paths:
+  /login/{username}/{password}:
+    post:
+      summary: "login into Practice"
+      description: "login from the central practice"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "user name"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "path"
+        description: "password"
+        required: true
+        type: "string"
+      responses:
+        201:
+          description: "practice registered"
+        400:
+          description: "invalid input, object invalid"
+        409:
+          description: "an existing item already exists"
   /registerpractice:
     post:
       summary: "register Practice"
