@@ -5,7 +5,7 @@ info:
   version: "1.0.0"
   title: "AllCare API"
   contact:
-    email: "subhan.sa@risecorp.com"
+    email: "prakashp@ezeees.com"
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
@@ -15,324 +15,77 @@ schemes:
 - "https"
 - "http"
 paths:
-  /login/{username}/{password}:
+  /getUserDetails:
     post:
-      summary: "login into Practice"
-      description: "login from the central practice"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "username"
-        in: "path"
-        description: "user name"
-        required: true
-        type: "string"
-      - name: "password"
-        in: "path"
-        description: "password"
-        required: true
-        type: "string"
-      responses:
-        201:
-          description: "practice registered"
-        400:
-          description: "invalid input, object invalid"
-        409:
-          description: "an existing item already exists"
-  /registerpractice:
-    post:
-      summary: "register Practice"
-      description: "Register practice with the system"
+      summary: "get user details while unified login"
+      description: "To get user practice id, practice url, and username from user\
+        \ selected object type and email address"
       consumes:
       - "application/json"
       produces:
       - "application/json"
       parameters:
       - in: "body"
-        name: "registerPracticeItem"
-        description: "practice item to add"
-        required: false
+        name: "getUserDetails"
+        description: "To get user practice id, practice url, and username from user\
+          \ selected object type and email address"
+        required: true
         schema:
-          $ref: "#/definitions/practiceItem"
-      responses:
-        201:
-          description: "practice registered"
-        400:
-          description: "invalid input, object invalid"
-        409:
-          description: "an existing item already exists"
-  /getallpractices:
-    get:
-      summary: "get all practices registered"
-      description: "retrieves all the practices registered with the system"
-      produces:
-      - "application/json"
-      parameters: []
+          $ref: "#/definitions/getUserDetails"
       responses:
         200:
           description: "success"
           schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/practiceItem"
+            type: "object"
+            properties: {}
+        204:
+          description: "No data available."
         400:
-          description: "Invalid"
-  /patientenroll:
-    post:
-      summary: "patient enroll"
-      description: "Enroll patient with the system"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "patient"
-        description: "practice item to add"
-        required: false
-        schema:
-          $ref: "#/definitions/patient"
-      responses:
-        201:
-          description: "patient registered"
-        400:
-          description: "invalid input, object invalid"
-        409:
-          description: "an existing item already exists"
-  /bookapptmnt:
-    post:
-      summary: "book appointment"
-      description: "booking appointment for patient"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "registerPracticeItem"
-        description: "practice item to add"
-        required: false
-        schema:
-          $ref: "#/definitions/appointment"
-      responses:
-        201:
-          description: "appointment success"
-        400:
-          description: "invalid input, object invalid"
-        409:
-          description: "an existing item already exists"
-  /getpatientdetails/{patient_id}:
-    get:
-      summary: "get patient details by patient ID"
-      description: "retrieves the patient details based on patient ID"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "patient_id"
-        in: "path"
-        description: "the details of the patient to be fetched"
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/patient"
-        400:
-          description: "Invalid patient ID"
-        404:
-          description: "user not found"
-  /getapptmntslots/{practioner_id}/{date}:
-    post:
-      summary: "appointment slots"
-      description: "retrieving appointment slots for a given practitioner id and data"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "practioner_id"
-        in: "path"
-        description: "practitioner id"
-        required: true
-        type: "string"
-      - name: "date"
-        in: "path"
-        description: "date of slot"
-        required: true
-        type: "string"
-      responses:
-        201:
-          description: "slots retrieved successfully"
-          schema:
-            $ref: "#/definitions/slotsAvbl"
-        400:
-          description: "invalid input, object invalid"
+          description: "(Bad Request or validation errors or exception errors)."
+        401:
+          description: "Unauthorized request."
+      security:
+      - apikey: null
+securityDefinitions:
+  BasicAuth:
+    type: "basic"
+  ApiKey:
+    type: "apiKey"
+    name: "apikey"
+    in: "header"
 definitions:
-  practiceItem:
+  getUserDetails:
     type: "object"
     required:
-    - "image_url"
-    - "latitude"
-    - "location"
-    - "longitude"
-    - "practice_name"
-    - "practice_statement"
-    - "specialities"
+    - "email"
+    - "objecttype"
     properties:
-      practice_name:
+      objecttype:
         type: "string"
-      practice_statement:
-        type: "string"
-      specialities:
-        type: "string"
-      image_url:
-        type: "string"
-      location:
-        type: "string"
-      latitude:
-        type: "string"
-      longitude:
-        type: "string"
-    example:
-      practice_statement: "practice_statement"
-      practice_name: "practice_name"
-      image_url: "image_url"
-      latitude: "latitude"
-      location: "location"
-      specialities: "specialities"
-      longitude: "longitude"
-  patient:
-    type: "object"
-    required:
-    - "country_of_residence"
-    - "date_of_birth"
-    - "first_name"
-    - "gender"
-    - "insurance_company_name"
-    - "insurance_id"
-    - "insurance_name"
-    - "last_name"
-    - "middle_name"
-    - "postal_code"
-    - "state"
-    - "street_address"
-    - "title"
-    properties:
-      title:
-        type: "string"
-      first_name:
-        type: "string"
-      middle_name:
-        type: "string"
-      last_name:
-        type: "string"
-      date_of_birth:
-        type: "string"
-      gender:
-        type: "string"
-      social_security_number:
-        type: "string"
+        format: "alpha"
+        description: "object type"
+        enum:
+        - "practice"
+        - "patient"
+        - "agency"
       email:
         type: "string"
-      mobile_number:
-        type: "string"
-      home_number:
-        type: "string"
-      street_address:
-        type: "string"
-      country_of_residence:
-        type: "string"
-      city:
-        type: "string"
-      state:
-        type: "string"
-      postal_code:
-        type: "string"
-      maritial_status:
-        type: "string"
-      employment_status:
-        type: "string"
-      insurance_company_name:
-        type: "string"
-      insurance_id:
-        type: "integer"
-      insurance_name:
-        type: "string"
-      insurance_phone:
-        type: "string"
-    example:
-      insurance_id: 0
-      street_address: "street_address"
-      gender: "gender"
-      country_of_residence: "country_of_residence"
-      city: "city"
-      insurance_phone: "insurance_phone"
-      date_of_birth: "date_of_birth"
-      insurance_company_name: "insurance_company_name"
-      last_name: "last_name"
-      home_number: "home_number"
-      title: "title"
-      middle_name: "middle_name"
-      maritial_status: "maritial_status"
-      social_security_number: "social_security_number"
-      state: "state"
-      employment_status: "employment_status"
-      insurance_name: "insurance_name"
-      mobile_number: "mobile_number"
-      postal_code: "postal_code"
-      first_name: "first_name"
-      email: "email"
-  appointment:
+        format: "email"
+  practicesList:
     type: "object"
     required:
-    - "app_status"
-    - "billing_location"
-    - "category_id"
-    - "category_title"
-    - "duration"
-    - "event_date"
-    - "facility"
-    - "login_userID"
-    - "patient_id"
-    - "practice_id"
-    - "start_time"
+    - "data"
+    - "message"
+    - "status_code"
     properties:
-      patient_id:
+      status_code:
         type: "integer"
-      practice_id:
-        type: "integer"
-      event_date:
+        description: "response code from service"
+      message:
         type: "string"
-      duration:
-        type: "string"
-      start_time:
-        type: "string"
-      category_id:
-        type: "string"
-      category_title:
-        type: "string"
-      login_userID:
-        type: "string"
-      app_status:
-        type: "string"
-      facility:
-        type: "string"
-      billing_location:
-        type: "string"
-  slotsAvbl:
-    type: "object"
-    properties:
-      slotsAvble:
-        type: "array"
-        description: "slots available"
-        items:
-          type: "string"
-    description: "slotsAvbl object"
-    example:
-      slotsAvble:
-      - "slotsAvble"
-      - "slotsAvble"
+        description: "response message from service"
+      data:
+        type: "object"
+        description: "response data from service"
+        properties: {}
 x-apigee-id: "AllCareCentralQA01"
